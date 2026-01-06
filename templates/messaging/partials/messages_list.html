@@ -1,0 +1,19 @@
+{% for message in messages %}
+    <article class="message-item {% if message.sender == request.user %}message-item-you{% else %}message-item-other{% endif %}">
+        <div class="message-bubble">
+            <p class="auto-direction">{{ message.body }}</p>
+        </div>
+        <div class="message-meta">
+            {% if message.sender == request.user %}
+                <span class="message-badge message-badge-you">You</span>
+            {% else %}
+                <span class="message-badge message-badge-other">
+                    {{ message.sender.first_name }} {{ message.sender.last_name }}
+                </span>
+            {% endif %}
+            · {{ message.created_at }}
+        </div>
+    </article>
+{% empty %}
+    <p class="muted">No messages yet.</p>
+{% endfor %}

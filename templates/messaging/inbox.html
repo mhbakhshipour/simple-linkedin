@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Conversations</h1>
+    {% if conversations %}
+        <ul class="conversation-list">
+            {% for conversation in conversations %}
+                {% if conversation.user1 == request.user %}
+                    {% with other=conversation.user2 %}
+                        <li>
+                            <a class="conversation-item" href="{% url 'messaging:conversation' conversation.pk %}">
+                                <div class="conversation-avatar">
+                                    {{ other.first_name|default:"" |slice:":1" }}
+                                </div>
+                                <div class="conversation-body">
+                                    <div class="conversation-name">
+                                        {{ other.first_name }} {{ other.last_name }}
+                                    </div>
+                                    {% with last_message=conversation.messages.last %}
+                                        {% if last_message %}
+                                            <div class="conversation-preview auto-direction">
+                                                {% if last_message.sender == request.user %}You: {% endif %}
+                                                {{ last_message.body|truncatechars:60 }}
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </a>
+                        </li>
+                    {% endwith %}
+                {% else %}
+                    {% with other=conversation.user1 %}
+                        <li>
+                            <a class="conversation-item" href="{% url 'messaging:conversation' conversation.pk %}">
+                                <div class="conversation-avatar">
+                                    {{ other.first_name|default:"" |slice:":1" }}
+                                </div>
+                                <div class="conversation-body">
+                                    <div class="conversation-name">
+                                        {{ other.first_name }} {{ other.last_name }}
+                                    </div>
+                                    {% with last_message=conversation.messages.last %}
+                                        {% if last_message %}
+                                            <div class="conversation-preview auto-direction">
+                                                {% if last_message.sender == request.user %}You: {% endif %}
+                                                {{ last_message.body|truncatechars:60 }}
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </a>
+                        </li>
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">No conversations yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

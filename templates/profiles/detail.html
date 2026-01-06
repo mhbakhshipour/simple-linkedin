@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ profile.user.first_name }} {{ profile.user.last_name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="profile-header">
+        <img
+            src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'img/default-avatar.svg' %}{% endif %}"
+            alt="Avatar"
+            class="profile-avatar"
+        >
+        <div class="profile-header-text">
+            <h1 class="page-title">
+                {{ profile.user.first_name }} {{ profile.user.last_name }}
+            </h1>
+            {% if profile.headline %}
+                <p class="profile-headline">{{ profile.headline }}</p>
+            {% endif %}
+            <div class="profile-stats">
+                <a class="link" href="{% url 'profiles:followers' profile.user.pk %}">
+                    Followers: {{ followers_count }}
+                </a>
+                ·
+                <a class="link" href="{% url 'profiles:following' profile.user.pk %}">
+                    Following: {{ following_count }}
+                </a>
+            </div>
+            {% if request.user.is_authenticated %}
+                <div class="profile-actions">
+                    {% if request.user.pk == profile.user.pk %}
+                        <a class="btn-secondary btn" href="{% url 'profiles:edit' %}">
+                            Edit profile
+                        </a>
+                    {% else %}
+                        <form method="post" action="{% if is_following %}{% url 'relationships:unfollow' profile.user.pk %}{% else %}{% url 'relationships:follow' profile.user.pk %}{% endif %}">
+                            {% csrf_token %}
+                            <button type="submit">
+                                {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                            </button>
+                        </form>
+                        <a class="btn-secondary btn" href="{% url 'messaging:start' profile.user.pk %}">
+                            Send message
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 class="page-title">Posts</h2>
+    <div class="post-list">
+        {% for post in posts %}
+            <article class="post-item">
+                <p class="auto-direction">{{ post.body }}</p>
+                <div class="post-meta">
+                    {{ post.created_at }}
+                    {% if request.user == post.author %}
+                        ·
+                        <a class="link" href="{% url 'posts:edit' post.pk %}">Edit</a>
+                        ·
+                        <a class="link" href="{% url 'posts:delete' post.pk %}">Delete</a>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <p class="muted">No posts yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

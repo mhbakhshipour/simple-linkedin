@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Simple LinkedIn{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="brand">
+                <span class="brand-mark">in</span>
+                <span class="brand-text">Simple LinkedIn</span>
+            </a>
+            <nav class="nav">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'posts:feed' %}">Home</a>
+                    <a href="{% url 'profiles:search' %}">Search</a>
+                    <a href="{% url 'profiles:detail' user.pk %}">Profile</a>
+                    <a href="{% url 'messaging:inbox' %}">Messages</a>
+                    <form method="post" action="{% url 'accounts:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">Login</a>
+                    <a href="{% url 'accounts:signup' %}">Sign up</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    <main class="site-main container">
+        <div class="layout-grid">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    <script>
+        function applyTextDirection(root) {
+            var scope = root || document;
+            var elements = scope.querySelectorAll(".auto-direction");
+            var rtlRegex = /[اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی]/;
+            elements.forEach(function (el) {
+                var text = el.textContent || "";
+                if (rtlRegex.test(text)) {
+                    el.dir = "rtl";
+                    el.style.textAlign = "right";
+                } else {
+                    el.dir = "ltr";
+                    el.style.textAlign = "left";
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            applyTextDirection(document);
+        });
+    </script>
+</body>
+</html>

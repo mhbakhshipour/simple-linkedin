@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Followers{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Followers of {{ profile_user.first_name }} {{ profile_user.last_name }}</h1>
+    {% if followers %}
+        <div class="post-list">
+            {% for follow in followers %}
+                {% with u=follow.follower %}
+                    <article class="post-item">
+                        <p>
+                            <a class="link" href="{% url 'profiles:detail' u.pk %}">
+                                {{ u.first_name }} {{ u.last_name }}
+                            </a>
+                            <span class="muted">· {{ u.email }}</span>
+                        </p>
+                        {% if u.profile.headline %}
+                            <p class="muted auto-direction">{{ u.profile.headline }}</p>
+                        {% endif %}
+                        {% if request.user.is_authenticated and request.user != u %}
+                            <div class="profile-actions">
+                                <form method="post" action="{% if u.id in following_ids %}{% url 'relationships:unfollow' u.pk %}{% else %}{% url 'relationships:follow' u.pk %}{% endif %}">
+                                    {% csrf_token %}
+                                    <button type="submit">
+                                        {% if u.id in following_ids %}Unfollow{% else %}Follow{% endif %}
+                                    </button>
+                                </form>
+                                <a class="btn-secondary btn" href="{% url 'messaging:start' u.pk %}">
+                                    Message
+                                </a>
+                            </div>
+                        {% endif %}
+                    </article>
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">No followers yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

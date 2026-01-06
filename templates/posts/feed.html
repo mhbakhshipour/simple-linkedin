@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Home feed</h1>
+    <form method="post" class="feed-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Share update</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2 class="page-title">Recent posts</h2>
+    <div class="post-list">
+        {% for post in page_obj %}
+            <article class="post-item">
+                <p class="auto-direction">{{ post.body }}</p>
+                <div class="post-meta">
+                    by
+                    <a class="link" href="{% url 'profiles:detail' post.author.pk %}">
+                        {{ post.author.first_name }} {{ post.author.last_name }}
+                    </a>
+                    on {{ post.created_at }}
+                    {% if user == post.author %}
+                        ·
+                        <a class="link" href="{% url 'posts:edit' post.pk %}">Edit</a>
+                        ·
+                        <a class="link" href="{% url 'posts:delete' post.pk %}">Delete</a>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <p class="muted">No posts yet.</p>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <div>
+            {% if page_obj.has_previous %}
+                <a class="link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+        </div>
+        <div>
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </div>
+        <div>
+            {% if page_obj.has_next %}
+                <a class="link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

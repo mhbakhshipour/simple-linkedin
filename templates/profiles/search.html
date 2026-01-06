@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="page-title">Search people</h1>
+    <form method="get">
+        <p>
+            <label for="id_q">Name</label>
+            <input type="text" id="id_q" name="q" value="{{ query }}">
+        </p>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+{% if query %}
+<div class="card">
+    <h2 class="page-title">Results for "{{ query }}"</h2>
+    {% if results %}
+        <div class="post-list">
+            {% for profile in results %}
+                <article class="post-item">
+                    <p>
+                        <a class="link" href="{% url 'profiles:detail' profile.user.pk %}">
+                            {{ profile.user.first_name }} {{ profile.user.last_name }}
+                        </a>
+                        <span class="muted">· {{ profile.user.email }}</span>
+                    </p>
+                    {% if profile.headline %}
+                        <p class="muted">{{ profile.headline }}</p>
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                        <div class="profile-actions">
+                            <form method="post" action="{% if profile.user.id in following_ids %}{% url 'relationships:unfollow' profile.user.pk %}{% else %}{% url 'relationships:follow' profile.user.pk %}{% endif %}">
+                                {% csrf_token %}
+                                <button type="submit">
+                                    {% if profile.user.id in following_ids %}Unfollow{% else %}Follow{% endif %}
+                                </button>
+                            </form>
+                            <a class="btn-secondary btn" href="{% url 'messaging:start' profile.user.pk %}">
+                                Message
+                            </a>
+                        </div>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">No people found.</p>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+
