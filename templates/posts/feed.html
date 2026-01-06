@@ -13,6 +13,29 @@
 </div>
 
 <div class="card">
+    <h2 class="page-title">Suggested users</h2>
+    {% if suggested_users %}
+        <div class="post-list">
+            {% for u in suggested_users %}
+                <article class="post-item">
+                    <p>
+                        <a class="link" href="{% url 'profiles:detail' u.pk %}">
+                            {{ u.first_name }} {{ u.last_name }}
+                        </a>
+                        <span class="muted">· {{ u.email }}</span>
+                    </p>
+                    {% if u.profile.headline %}
+                        <p class="muted auto-direction">{{ u.profile.headline }}</p>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">No suggested users.</p>
+    {% endif %}
+</div>
+
+<div class="card">
     <h2 class="page-title">Recent posts</h2>
     <div class="post-list">
         {% for post in page_obj %}
