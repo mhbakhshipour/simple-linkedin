@@ -15,19 +15,21 @@
 <div class="card">
     <h2 class="page-title">Suggested users</h2>
     {% if suggested_users %}
-        <div class="post-list">
+        <div class="suggested-users-strip">
             {% for u in suggested_users %}
-                <article class="post-item">
-                    <p>
-                        <a class="link" href="{% url 'profiles:detail' u.pk %}">
-                            {{ u.first_name }} {{ u.last_name }}
-                        </a>
-                        <span class="muted">· {{ u.email }}</span>
-                    </p>
+                <a class="suggested-user-chip" href="{% url 'profiles:detail' u.pk %}">
+                    <div class="suggested-user-avatar">
+                        {{ u.first_name|default:u.email|slice:":1" }}
+                    </div>
+                    <div class="suggested-user-name">
+                        {{ u.first_name|default:"User" }}
+                    </div>
                     {% if u.profile.headline %}
-                        <p class="muted auto-direction">{{ u.profile.headline }}</p>
+                        <div class="suggested-user-headline auto-direction">
+                            {{ u.profile.headline|truncatechars:30 }}
+                        </div>
                     {% endif %}
-                </article>
+                </a>
             {% endfor %}
         </div>
     {% else %}
