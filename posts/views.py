@@ -29,7 +29,7 @@ def feed(request):
     page_obj = paginator.get_page(page_number)
     suggested_users = (
         User.objects.exclude(pk=request.user.pk)
-        .order_by("-date_joined")[:5]
+        .order_by("-date_joined")[:10]
     )
     return render(
         request,

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
 
@@ -19,14 +20,17 @@
             {% for u in suggested_users %}
                 <a class="suggested-user-chip" href="{% url 'profiles:detail' u.pk %}">
                     <div class="suggested-user-avatar">
-                        {{ u.first_name|default:u.email|slice:":1" }}
+                        <img
+                            src="{% if u.profile.avatar %}{{ u.profile.avatar.url }}{% else %}{% static 'img/default-avatar.svg' %}{% endif %}"
+                            alt="{{ u.first_name }} {{ u.last_name }}"
+                        >
                     </div>
                     <div class="suggested-user-name">
-                        {{ u.first_name|default:"User" }}
+                        {{ u.first_name|default:"User"|truncatechars:6 }} {{ u.last_name|truncatechars:6 }}
                     </div>
                     {% if u.profile.headline %}
                         <div class="suggested-user-headline auto-direction">
-                            {{ u.profile.headline|truncatechars:30 }}
+                            {{ u.profile.headline|truncatechars:12 }}
                         </div>
                     {% endif %}
                 </a>
