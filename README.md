@@ -75,3 +75,28 @@ Run the Django test suite:
 python manage.py test
 ```
 
+## Docker usage
+
+Build and run with docker-compose:
+
+```bash
+docker-compose up --build
+```
+
+This starts:
+
+- web: Django app served by gunicorn on port 8000
+- nginx: reverse proxy on port 80, serving static and media files
+
+Before first run you can create and apply migrations inside the web container:
+
+```bash
+docker-compose run --rm web python manage.py migrate
+```
+
+To seed demo Persian data inside the container:
+
+```bash
+docker-compose run --rm web python manage.py seed_persian_data
+```
+
