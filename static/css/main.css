@@ -253,7 +253,8 @@ form button[type="submit"]:hover,
     display: flex;
     gap: 0.75rem;
     overflow-x: auto;
-    padding: 0.25rem 0;
+    padding: 0.25rem 0.25rem 0.5rem;
+    scroll-snap-type: x mandatory;
 }
 
 .suggested-user-chip {
@@ -262,15 +263,22 @@ form button[type="submit"]:hover,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80px;
+    width: 88px;
     text-align: center;
+    padding: 0.35rem 0.25rem;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    scroll-snap-align: start;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .suggested-user-avatar {
     width: 56px;
     height: 56px;
     border-radius: 999px;
-    background-color: #0a66c2;
+    background: linear-gradient(135deg, #0a66c2, #2563eb);
     color: #ffffff;
     display: flex;
     align-items: center;
@@ -289,6 +297,13 @@ form button[type="submit"]:hover,
 .suggested-user-headline {
     margin-top: 0.1rem;
     font-size: 0.7rem;
+    color: #6b7280;
+}
+
+.suggested-user-chip:hover {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(15, 23, 42, 0.08);
+    transform: translateY(-1px);
 }
 
 .pagination {
