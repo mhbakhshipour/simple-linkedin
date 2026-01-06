@@ -10,6 +10,7 @@ env.read_env(path=BASE_DIR / ".env")
 SECRET_KEY = env.str("DJANGO_SECRET_KEY", default="insecure-dev-secret-key")
 DEBUG = env.bool("DJANGO_DEBUG", default=True)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
+CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 
 
 # Application definition
